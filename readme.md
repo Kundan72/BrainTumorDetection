@@ -1,4 +1,4 @@
-py -m venv venv  (venv creation)
+py -m venv benv  (venv creation)
 
 Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned  (for first time activating vnv)
 
