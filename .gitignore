@@ -1,0 +1,7 @@
+# Virtual environment
+benv/
+
+
+# Python cache
+__pycache__/
+*.pyc

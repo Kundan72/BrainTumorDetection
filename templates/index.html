@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Brain Tumor Classifier</title>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      * {
+        font-family: "Poppins", sans-serif;
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .container {
+        background: #fff;
+        width: 480px;
+        padding: 30px;
+        border-radius: 18px;
+        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.25);
+      }
+
+      h2 {
+        text-align: center;
+        margin-bottom: 5px;
+      }
+      p {
+        text-align: center;
+        font-size: 14px;
+        color: #666;
+      }
+
+      .upload-box {
+        border: 2px dashed #764ba2;
+        padding: 22px;
+        border-radius: 14px;
+        text-align: center;
+        cursor: pointer;
+        margin-top: 15px;
+      }
+
+      .upload-box input {
+        display: none;
+      }
+
+      .preview {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+        gap: 10px;
+        margin-top: 15px;
+      }
+
+      .preview img {
+        width: 100%;
+        height: 90px;
+        object-fit: cover;
+        border-radius: 10px;
+      }
+
+      button {
+        width: 100%;
+        margin-top: 20px;
+        padding: 12px;
+        border: none;
+        border-radius: 30px;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+      }
+
+      .results {
+        margin-top: 25px;
+      }
+
+      .card {
+        background: #f4f4f9;
+        padding: 14px;
+        border-radius: 12px;
+        margin-bottom: 15px;
+      }
+
+      .card-title {
+        font-weight: 500;
+        margin-bottom: 6px;
+      }
+
+      .prediction {
+        display: flex;
+        justify-content: space-between;
+        font-size: 13px;
+        margin-bottom: 6px;
+      }
+
+      .bar {
+        background: #ddd;
+        height: 8px;
+        border-radius: 8px;
+        overflow: hidden;
+      }
+
+      .bar-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #667eea, #764ba2);
+      }
+
+      .probs {
+        margin-top: 10px;
+        font-size: 12px;
+      }
+
+      .probs div {
+        display: flex;
+        justify-content: space-between;
+        color: #444;
+      }
+
+      footer {
+        text-align: center;
+        font-size: 11px;
+        color: #aaa;
+        margin-top: 10px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <h2>Brain Tumor Classifier</h2>
+      <p>Upload MRI images for AI-based diagnosis</p>
+
+      <form action="/predict" method="post" enctype="multipart/form-data">
+        <div class="upload-box">
+          <label>
+            Upload MRI Images
+            <input
+              type="file"
+              name="file[]"
+              id="fileInput"
+              multiple
+              accept="image/*"
+              required
+              onchange="previewImages()"
+            />
+          </label>
+        </div>
+
+        <div id="preview" class="preview"></div>
+
+        <button type="submit">Predict</button>
+      </form>
+
+      {% if results %}
+      <div class="results">
+        {% for r in results %}
+        <div class="card">
+          <div class="card-title">{{ r.filename }}</div>
+
+          <div class="prediction">
+            <span>{{ r.prediction }}</span>
+            <span>{{ r.confidence }}%</span>
+          </div>
+
+          <div class="bar">
+            <div class="bar-fill" style="width: {{ r.confidence }}%"></div>
+          </div>
+
+          <div class="probs">
+            {% for cls, prob in r.all_probs.items() %}
+            <div>
+              <span>{{ cls }}</span>
+              <span>{{ prob }}%</span>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <footer>Medical AI | Deep Learning Project</footer>
+    </div>
+
+    <script>
+      function previewImages() {
+        const preview = document.getElementById("preview");
+        preview.innerHTML = "";
+        const files = document.getElementById("fileInput").files;
+
+        for (let i = 0; i < files.length; i++) {
+          const img = document.createElement("img");
+          img.src = URL.createObjectURL(files[i]);
+          preview.appendChild(img);
+        }
+      }
+    </script>
+  </body>
+</html>
